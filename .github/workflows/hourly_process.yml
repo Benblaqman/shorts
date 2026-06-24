@@ -36,7 +36,6 @@ jobs:
       env:
         YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
       run: |
-        export YTDL_OPTS='--format best[height<=480][ext=mp4]/best'
         python cron_job.py
 
     - name: Commit and Push New Video Clips & Dashboard
