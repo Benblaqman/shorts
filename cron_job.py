@@ -190,34 +190,38 @@ def download_and_cut_video(video_url, video_title):
         'max_filesize': 30 * 1024 * 1024,
     }
     
-    print("⏳ Downloading video...")
-    with YoutubeDL(ydl_opts) as ydl:
-        ydl.download([video_url])
-        
-    if not os.path.exists(raw_output): return
-
-    print("✂️ Slicing video into 3 parts...")
+        print("✂️ Slicing raw media elements into 3 distinct highlights...")
     try:
         with VideoFileClip(raw_output) as video:
             duration = video.duration
-            clip_length = 15
+            clip_length = 15  
             intervals = [duration * 0.2, duration * 0.5, duration * 0.8]
             
             for i, start_time in enumerate(intervals):
                 if start_time + clip_length < duration:
                     end_time = start_time + clip_length
-                    sub_clip = video.subclipped(start_time, end_time)
+                    
+                    # Backwards compatibility check for MoviePy v1 and v2 methods
+                    if hasattr(video, "subclipped"):
+                        sub_clip = video.subclipped(start_time, end_time) # v2.x style
+                    else:
+                        sub_clip = video.subclip(start_time, end_time)    # v1.x style
+                        
                     sub_clip.write_videofile(
                         os.path.join(DOWNLOAD_DIR, f"best_part_{i+1}.mp4"), 
                         codec="libx264", 
                         audio_codec="aac"
                     )
+                    
         os.remove(raw_output)
-        print("✅ Finished cutting clips successfully!")
-        # Fire off the automated layout creation passing the true title
+        print("✅ Segment isolation routine executed completely.")
         generate_dashboard(video_title)
     except Exception as e:
-        print(f"❌ Video cutting error: {e}")
+        print(f"❌ Video cutting error encountered: {e}")
+
+
+
+
 
 if __name__ == '__main__':
     url, title = get_top_trending_stream()
