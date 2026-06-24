@@ -181,9 +181,9 @@ def generate_dashboard(video_title):
 def download_and_cut_video(video_url, video_title):
     if not video_url: return
     
-    # Clean old items
+    # Clean old clips only; keep index.html so the page never goes blank on a failed run
     for f in os.listdir(DOWNLOAD_DIR):
-        if f.endswith('.mp4') or f == 'index.html':
+        if f.endswith('.mp4'):
             try: os.remove(os.path.join(DOWNLOAD_DIR, f))
             except: pass
 

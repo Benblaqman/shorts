@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hourly YouTube Shorts Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0f1f;
+            color: #ffffff;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #ff0055;
+            margin-bottom: 5px;
+            font-size: 2.5rem;
+        }
+        .subtitle {
+            color: #8888a0;
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+        /* Horizontal Row Grid Layout */
+        .dashboard-row {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        /* Sliding Entry Animation */
+        .video-card {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1;
+            min-width: 280px;
+            max-width: 350px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            border: 1px solid #252547;
+            text-align: left;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: slideUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+        /* Staggered animation delay for cards */
+        .video-card:nth-child(1) { animation-delay: 0.1s; }
+        .video-card:nth-child(2) { animation-delay: 0.3s; }
+        .video-card:nth-child(3) { animation-delay: 0.5s; }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .card-tag {
+            background: #ff0055;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .video-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+            color: #e2e2e9;
+        }
+        .video-meta {
+            font-size: 0.85rem;
+            color: #7c7c93;
+            margin-bottom: 20px;
+        }
+        .download-btn {
+            display: block;
+            text-align: center;
+            background: linear-gradient(135deg, #ff0055 0%, #cc0044 100%);
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: transform 0.2s, filter 0.2s;
+        }
+        .download-btn:hover {
+            transform: scale(1.03);
+            filter: brightness(1.1);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎬 Stream Cutter Dashboard</h1>
+    <div class="subtitle">Last Automated Processing: <strong>2026-06-24 11:21:12 UTC</strong></div>
+
+    <div class="dashboard-row">
+        <!-- Part 1 -->
+        <div class="video-card">
+            <span class="card-tag">CLIP #1 (INTRO)</span>
+            <div class="video-title">Awaiting first automated stream capture…</div>
+            <div class="video-meta">Segment: 20% Timeline Depth</div>
+            <a class="download-btn" href="best_part_1.mp4" download>📥 Download Clip</a>
+        </div>
+
+        <!-- Part 2 -->
+        <div class="video-card">
+            <span class="card-tag">CLIP #2 (MIDSTREAM)</span>
+            <div class="video-title">Awaiting first automated stream capture…</div>
+            <div class="video-meta">Segment: 50% Timeline Depth</div>
+            <a class="download-btn" href="best_part_2.mp4" download>📥 Download Clip</a>
+        </div>
+
+        <!-- Part 3 -->
+        <div class="video-card">
+            <span class="card-tag">CLIP #3 (PEAK CLIMAX)</span>
+            <div class="video-title">Awaiting first automated stream capture…</div>
+            <div class="video-meta">Segment: 80% Timeline Depth</div>
+            <a class="download-btn" href="best_part_3.mp4" download>📥 Download Clip</a>
+        </div>
+    </div>
+
+</body>
+</html>
