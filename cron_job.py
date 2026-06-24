@@ -29,7 +29,7 @@ def get_top_trending_stream():
             video_id = response["items"][0]["id"]["videoId"]
             title = response["items"][0]["snippet"]["title"]
             print(f"🔥 Top Stream Found: {title} (ID: {video_id})")
-            return f"https://youtube.com{video_id}", title
+            return f"https://www.youtube.com/watch?v={video_id}", title
     except Exception as e:
         print(f"❌ API Error: {e}")
     return None, None
@@ -193,8 +193,20 @@ def download_and_cut_video(video_url, video_title):
         'outtmpl': raw_output,
         'max_filesize': 30 * 1024 * 1024,
     }
-    
-        print("✂️ Slicing raw media elements into 3 distinct highlights...")
+
+    print("⬇️ Downloading raw stream segment...")
+    try:
+        with YoutubeDL(ydl_opts) as ydl:
+            ydl.download([video_url])
+    except Exception as e:
+        print(f"❌ Download error encountered: {e}")
+        return
+
+    if not os.path.exists(raw_output):
+        print("❌ Raw video was not downloaded; aborting.")
+        return
+
+    print("✂️ Slicing raw media elements into 3 distinct highlights...")
     try:
         with VideoFileClip(raw_output) as video:
             duration = video.duration
