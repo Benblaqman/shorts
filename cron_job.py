@@ -4,7 +4,6 @@ from googleapiclient.discovery import build
 from yt_dlp import YoutubeDL
 from moviepy.video.io.VideoFileClip import VideoFileClip
 
-# CONFIGURATION
 # CONFIGURATION SETTINGS
 API_KEY = os.environ.get("YOUTUBE_API_KEY")
 DOWNLOAD_DIR = "./docs"
@@ -14,21 +13,24 @@ os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 
 def get_top_trending_stream():
+    if not API_KEY:
+        print("❌ YOUTUBE_API_KEY is not set. Add it as an Actions repository secret named "
+              "YOUTUBE_API_KEY and re-run.")
+        return None, None
     try:
         youtube = build("youtube", "v3", developerKey=API_KEY)
-        request = youtube.search().list(
+        request = youtube.videos().list(
             part="snippet",
-            eventType="live",
-            type="video",
-            order="viewCount",
-            maxResults=1,
-            regionCode="US"
+            chart="mostPopular",
+            regionCode="US",
+            maxResults=1
         )
         response = request.execute()
         if response.get("items"):
-            video_id = response["items"][0]["id"]["videoId"]
-            title = response["items"][0]["snippet"]["title"]
-            print(f"🔥 Top Stream Found: {title} (ID: {video_id})")
+            item = response["items"][0]
+            video_id = item["id"]
+            title = item["snippet"]["title"]
+            print(f"🔥 Top Trending Video Found: {title} (ID: {video_id})")
             return f"https://www.youtube.com/watch?v={video_id}", title
     except Exception as e:
         print(f"❌ API Error: {e}")
@@ -185,13 +187,15 @@ def download_and_cut_video(video_url, video_title):
     for f in os.listdir(DOWNLOAD_DIR):
         if f.endswith('.mp4'):
             try: os.remove(os.path.join(DOWNLOAD_DIR, f))
-            except: pass
+            except OSError: pass
 
     raw_output = os.path.join(DOWNLOAD_DIR, "raw_video.mp4")
     ydl_opts = {
-        'format': 'best[ext=mp4]/best',
+        'format': 'best[height<=480][ext=mp4]/best[height<=480]/best',
         'outtmpl': raw_output,
-        'max_filesize': 30 * 1024 * 1024,
+        'max_filesize': 150 * 1024 * 1024,
+        'noplaylist': True,
+        'quiet': True,
     }
 
     print("⬇️ Downloading raw stream segment...")
@@ -210,7 +214,10 @@ def download_and_cut_video(video_url, video_title):
     try:
         with VideoFileClip(raw_output) as video:
             duration = video.duration
-            clip_length = 15  
+            if not duration:
+                print("❌ Could not determine video duration; aborting.")
+                return
+            clip_length = 15
             intervals = [duration * 0.2, duration * 0.5, duration * 0.8]
             
             for i, start_time in enumerate(intervals):
