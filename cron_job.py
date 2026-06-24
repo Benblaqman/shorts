@@ -5,9 +5,13 @@ from yt_dlp import YoutubeDL
 from moviepy.video.io.VideoFileClip import VideoFileClip
 
 # CONFIGURATION
+# CONFIGURATION SETTINGS
 API_KEY = os.environ.get("YOUTUBE_API_KEY")
 DOWNLOAD_DIR = "./docs"
+
+# Force directory generation immediately upon initialization to prevent deployment race conditions
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
+
 
 def get_top_trending_stream():
     try:
