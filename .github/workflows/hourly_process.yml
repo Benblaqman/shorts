@@ -37,14 +37,16 @@ jobs:
         YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
       run: python cron_job.py
 
-    - name: Commit and Push New Video Clips & Dashboard
+        - name: Commit and Push New Video Clips & Dashboard
       run: |
         git config --global user.name "GitHub Action Bot"
         git config --global user.email "actions@github.com"
         
-        # Stage all changes inside the docs folder (videos + index.html)
+        # Stage everything inside the docs directory
         git add docs/*
         
-        # Commit and push changes, using [skip ci] to prevent infinite execution loops
+        # Safely commit changes without breaking if nothing new was found
         git commit -m "Automated hourly video clip and dashboard update [skip ci]" || echo "No changes to commit"
-        git push
+        
+        # Use the default GitHub token to explicitly bypass authentication errors
+        git push origin HEAD:main
